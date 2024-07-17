@@ -12,12 +12,24 @@ app.get('/api', (req, res) => {
   res.send("In the future, I will say what the API can do here.");
 });
 
+/** 
+ * This endpoint will return the number of times the page has been visited.
+ * If the query param noincrement is set to true, the counter will not be incremented.
+ * If the query param type is set to json, the response will be in JSON format.
+ * eg. /api/count?type=json&noincrement=true
+ **/
 app.get('/api/count', (req, res) => {
   // if req is from dev.adrucker.com, then don't increment the counter
-  if (req.hostname !== 'dev.adrucker.com') {
+  
+  if (req.hostname !== 'dev.adrucker.com' && req.query.noincrement !== 'true') {
     visitCounter++;
   }
-  res.send(`Page has been visited ${visitCounter} times`);
+  // check query param return type
+  if (req.query.type === 'json') {
+    res.json({ count: visitCounter }); // for use in the react app
+  } else {
+    res.send(`Page has been visited ${visitCounter} times`); // for testing the API endpoint
+  }
 });
 
 app.listen(PORT, () => {
